@@ -19,4 +19,11 @@
     <color name="gray_600">#4B5563</color>
     <color name="gray_900">#111827</color>
     <color name="background_page">#E8EDF5</color>
+
+    <color name="blue_primary">#1B6EF3</color>
+
+    <color name="gray_bg">#F9FAFB</color>
+    <color name="text_dark">#111827</color>
+    <color name="text_gray">#4B5563</color>
+
 </resources>

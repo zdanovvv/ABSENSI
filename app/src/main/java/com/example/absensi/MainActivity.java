@@ -1,128 +1,48 @@
 package com.example.absensi;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
-
-    private LinearLayout navHome, navRiwayat, navAbsen, navLokasi, navProfil;
-    private ImageView icHome, icRiwayat, icLokasi, icProfil;
-    private TextView tvHome, tvRiwayat, tvLokasi, tvProfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initViews();
-        setupNavigation();
+        BottomNavigationView nav = findViewById(R.id.bottom_navigation);
+        FloatingActionButton fab = findViewById(R.id.fab_absen);
 
-        // Load initial fragment
-        if (savedInstanceState == null) {
-            replaceFragment(new HomeFragment());
-        }
-    }
+        // Halaman awal
+        loadFragment(new HomeFragment());
 
-    private void initViews() {
-        navHome = findViewById(R.id.nav_home);
-        navRiwayat = findViewById(R.id.nav_riwayat);
-        navAbsen = findViewById(R.id.nav_absen);
-        navLokasi = findViewById(R.id.nav_lokasi);
-        navProfil = findViewById(R.id.nav_profil);
+        nav.setOnItemSelectedListener(item -> {
+            Fragment f = null;
+            int id = item.getItemId();
+            if (id == R.id.nav_home) f = new HomeFragment();
+            else if (id == R.id.nav_history) f = new RiwayatFragment();
+            else if (id == R.id.nav_location) f = new LokasiFragment();
+            else if (id == R.id.nav_profile) f = new ProfilFragment();
 
-        icHome = findViewById(R.id.ic_nav_home);
-        icRiwayat = findViewById(R.id.ic_nav_riwayat);
-        icLokasi = findViewById(R.id.ic_nav_lokasi);
-        icProfil = findViewById(R.id.ic_nav_profil);
-
-        tvHome = findViewById(R.id.tv_nav_home);
-        tvRiwayat = findViewById(R.id.tv_nav_riwayat);
-        tvLokasi = findViewById(R.id.tv_nav_lokasi);
-        tvProfil = findViewById(R.id.tv_nav_profil);
-    }
-
-    private void setupNavigation() {
-        navHome.setOnClickListener(v -> {
-            replaceFragment(new HomeFragment());
-            updateNavUI(0);
+            if (f != null) loadFragment(f);
+            return true;
         });
 
-        navRiwayat.setOnClickListener(v -> {
-            replaceFragment(new RiwayatFragment());
-            updateNavUI(1);
-        });
-
-        navAbsen.setOnClickListener(v -> {
-            replaceFragment(new AbsenFragment());
-            updateNavUI(2);
-        });
-
-        navLokasi.setOnClickListener(v -> {
-            replaceFragment(new LokasiFragment());
-            updateNavUI(3);
-        });
-
-        navProfil.setOnClickListener(v -> {
-            replaceFragment(new ProfilFragment());
-            updateNavUI(4);
+        // Klik Tombol Scan/Absen Tengah
+        fab.setOnClickListener(v -> {
+            // Nanti lu arahin ke ScanActivity
         });
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Animasi perpindahan (Fade In & Out)
         transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
-    }
-
-    private void updateNavUI(int position) {
-        // Reset all
-        icHome.setColorFilter(ContextCompat.getColor(this, R.color.gray_400));
-        icRiwayat.setColorFilter(ContextCompat.getColor(this, R.color.gray_400));
-        icLokasi.setColorFilter(ContextCompat.getColor(this, R.color.gray_400));
-        icProfil.setColorFilter(ContextCompat.getColor(this, R.color.gray_400));
-
-        tvHome.setTextColor(ContextCompat.getColor(this, R.color.gray_400));
-        tvRiwayat.setTextColor(ContextCompat.getColor(this, R.color.gray_400));
-        tvLokasi.setTextColor(ContextCompat.getColor(this, R.color.gray_400));
-        tvProfil.setTextColor(ContextCompat.getColor(this, R.color.gray_400));
-
-        tvHome.setTypeface(null, android.graphics.Typeface.NORMAL);
-        tvRiwayat.setTypeface(null, android.graphics.Typeface.NORMAL);
-        tvLokasi.setTypeface(null, android.graphics.Typeface.NORMAL);
-        tvProfil.setTypeface(null, android.graphics.Typeface.NORMAL);
-
-        // Highlight selected
-        switch (position) {
-            case 0:
-                icHome.setColorFilter(ContextCompat.getColor(this, R.color.blue));
-                tvHome.setTextColor(ContextCompat.getColor(this, R.color.blue));
-                tvHome.setTypeface(null, android.graphics.Typeface.BOLD);
-                break;
-            case 1:
-                icRiwayat.setColorFilter(ContextCompat.getColor(this, R.color.blue));
-                tvRiwayat.setTextColor(ContextCompat.getColor(this, R.color.blue));
-                tvRiwayat.setTypeface(null, android.graphics.Typeface.BOLD);
-                break;
-            case 3:
-                icLokasi.setColorFilter(ContextCompat.getColor(this, R.color.blue));
-                tvLokasi.setTextColor(ContextCompat.getColor(this, R.color.blue));
-                tvLokasi.setTypeface(null, android.graphics.Typeface.BOLD);
-                break;
-            case 4:
-                icProfil.setColorFilter(ContextCompat.getColor(this, R.color.blue));
-                tvProfil.setTextColor(ContextCompat.getColor(this, R.color.blue));
-                tvProfil.setTypeface(null, android.graphics.Typeface.BOLD);
-                break;
-        }
     }
 }
