@@ -1,42 +1,36 @@
 package com.example.absensi;
 
-// import org.tensorflow.lite.Interpreter;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
-import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    // private Interpreter tflite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        try {
-            // Load model dari folder assets
-            tflite = new Interpreter(loadModelFile());
-            Log.d("TFLite", "Model berhasil di-load!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
-    }
+        BottomNavigationView nav = findViewById(R.id.bottom_navigation);
 
-    /*
-    private MappedByteBuffer loadModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model_presensi_mobile.tflite");
-        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-        FileChannel fileChannel = inputStream.getChannel();
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, fileDescriptor.getStartOffset(), fileDescriptor.getDeclaredLength());
+        // Halaman awal
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment()).commit();
+
+        nav.setOnItemSelectedListener(item -> {
+            Fragment f = null;
+            int id = item.getItemId();
+            if (id == R.id.nav_home) f = new HomeFragment();
+            else if (id == R.id.nav_history) f = new Fragment(); // Ganti ntar
+            else if (id == R.id.nav_location) f = new Fragment();
+            else if (id == R.id.nav_profile) f = new Fragment();
+
+            if (f != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, f).commit();
+            }
+            return true;
+        });
     }
-    */
 }
