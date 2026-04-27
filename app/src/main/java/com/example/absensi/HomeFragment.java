@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
-    private TextView tvCurrentTime;
+    private TextView tvHomeTime;
     private Handler handler;
     private Runnable timeUpdater;
 
@@ -27,31 +27,35 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        tvCurrentTime = view.findViewById(R.id.tvCurrentTime);
-        Button btnMasuk = view.findViewById(R.id.btnMasuk);
-        Button btnKeluar = view.findViewById(R.id.btnKeluar);
+        tvHomeTime = view.findViewById(R.id.tv_home_time);
+        Button btnMasuk = view.findViewById(R.id.btn_masuk);
+        Button btnKeluar = view.findViewById(R.id.btn_keluar);
+        Button btnIstirahat = view.findViewById(R.id.btn_istirahat);
 
-        // Update Jam Realtime persis seperti updateClock() di JS
+        // Update Jam Realtime
         handler = new Handler(Looper.getMainLooper());
         timeUpdater = new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm 'WIB'", new Locale("id", "ID"));
-                if (tvCurrentTime != null) {
-                    tvCurrentTime.setText(sdf.format(new Date()));
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                if (tvHomeTime != null) {
+                    tvHomeTime.setText(sdf.format(new Date()));
                 }
-                handler.postDelayed(this, 1000); // Jalan tiap 1 detik
+                handler.postDelayed(this, 1000);
             }
         };
         handler.post(timeUpdater);
 
-        // Aksi Klik Tombol
         btnMasuk.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Tombol Masuk Berhasil Ditekan!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Silakan buka tab Absen untuk Check-in", Toast.LENGTH_SHORT).show();
         });
 
         btnKeluar.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Tombol Keluar Berhasil Ditekan!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Check-out berhasil!", Toast.LENGTH_SHORT).show();
+        });
+
+        btnIstirahat.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), "Mode istirahat aktif ☕", Toast.LENGTH_SHORT).show();
         });
 
         return view;
@@ -60,7 +64,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Hentikan jam saat pindah tab biar HP nggak nge-lag / memori bocor
         if (handler != null && timeUpdater != null) {
             handler.removeCallbacks(timeUpdater);
         }
